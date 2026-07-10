@@ -1,0 +1,1 @@
+"""TripWeaver MCP server package."""
