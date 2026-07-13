@@ -10,6 +10,8 @@ intent routing, MCP hotel and flight servers, and a polished Gradio chat UI.
   and combined hotel-plus-flight planning.
 - Separate MCP servers for hotel and flight capabilities.
 - MCP tools for listing, searching, and booking hotels and flights.
+- Live provider bridge using the Convex travel service URLs from the reference
+  example, with local fallback data for reliable demos.
 - Graceful service failure handling with user-friendly messages.
 - Missing-detail follow-up questions instead of fabricated values.
 - Streaming FastAPI endpoint with agent activity events.
@@ -55,6 +57,17 @@ docs/             MCP setup, deployment, and viva notes
 ```
 
 ## Local Setup
+
+For the easiest Windows setup, read [RUN_FULL_PROJECT.md](RUN_FULL_PROJECT.md)
+or run:
+
+```bat
+setup_windows.bat
+start_backend.bat
+start_frontend.bat
+```
+
+Manual setup:
 
 1. Create a virtual environment.
 
@@ -120,6 +133,10 @@ it immediately before deployment.
 ## Deployment
 
 See [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
+
+## Beginner Run Guide
+
+See [RUN_FULL_PROJECT.md](RUN_FULL_PROJECT.md).
 
 ## MCP Setup
 

@@ -6,7 +6,30 @@ from agents.llm import get_chat_model
 from agents.mcp_client import safe_call_mcp_tool
 
 
-KNOWN_CITIES = ["Colombo", "Kandy", "Paris", "Tokyo", "Dubai", "London"]
+KNOWN_CITIES = [
+    "Colombo",
+    "Kandy",
+    "Paris",
+    "Tokyo",
+    "Dubai",
+    "London",
+    "Bangkok",
+    "Singapore",
+    "Mumbai",
+    "Delhi",
+]
+CITY_CODES = {
+    "CMB": "Colombo",
+    "BOM": "Mumbai",
+    "DEL": "Delhi",
+    "BKK": "Bangkok",
+    "SIN": "Singapore",
+    "DXB": "Dubai",
+    "LHR": "London",
+    "CDG": "Paris",
+    "NRT": "Tokyo",
+    "HND": "Tokyo",
+}
 
 
 def _append_event(state: TravelState, message: str, activity: str, tool: Optional[str] = None, status: str = "IDLE") -> None:
@@ -27,23 +50,34 @@ def _extract_city(query: str) -> Optional[str]:
 
 def _extract_route(query: str) -> Dict[str, Optional[str]]:
     cities = [city for city in KNOWN_CITIES if city.lower() in query.lower()]
+    codes = [code for code in CITY_CODES if re.search(rf"\b{code}\b", query, re.I)]
     origin = None
     destination = None
 
     from_match = re.search(r"from\s+([A-Za-z ]+?)\s+(?:to|into|towards)\s+([A-Za-z ]+)", query, re.I)
+    code_match = re.search(r"\b([A-Z]{3})\b\s+(?:to|into|towards|->)\s+\b([A-Z]{3})\b", query, re.I)
     if from_match:
         origin = _normalise_city(from_match.group(1))
         destination = _normalise_city(from_match.group(2))
+    elif code_match:
+        origin = _normalise_city(code_match.group(1))
+        destination = _normalise_city(code_match.group(2))
     elif len(cities) >= 2:
         origin, destination = cities[0], cities[1]
+    elif len(codes) >= 2:
+        origin, destination = CITY_CODES[codes[0].upper()], CITY_CODES[codes[1].upper()]
     elif len(cities) == 1:
         destination = cities[0]
+    elif len(codes) == 1:
+        destination = CITY_CODES[codes[0].upper()]
 
     return {"origin": origin, "destination": destination}
 
 
 def _normalise_city(text: str) -> Optional[str]:
     cleaned = re.sub(r"[^A-Za-z ]", "", text).strip().lower()
+    if cleaned.upper() in CITY_CODES:
+        return CITY_CODES[cleaned.upper()]
     for city in KNOWN_CITIES:
         if city.lower() in cleaned or cleaned in city.lower():
             return city
@@ -60,6 +94,16 @@ def _extract_budget(query: str) -> Optional[int]:
 def _extract_name(query: str) -> Optional[str]:
     match = re.search(r"(?:for|name is|under)\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+)?)", query)
     return match.group(1) if match else None
+
+
+def _extract_date(query: str) -> Optional[str]:
+    match = re.search(r"\b(20\d{2}-\d{2}-\d{2})\b", query)
+    return match.group(1) if match else None
+
+
+def _wants_list_all(query: str) -> bool:
+    text = query.lower()
+    return any(phrase in text for phrase in ["list all", "show all", "all hotels", "all flights", "available hotels", "available flights"])
 
 
 def _format_hotels(hotels: List[Dict[str, Any]]) -> str:
@@ -116,6 +160,8 @@ async def router_node(state: TravelState) -> TravelState:
         "budget": _extract_budget(query),
         **_extract_route(query),
         "name": _extract_name(query),
+        "date": _extract_date(query),
+        "list_all": _wants_list_all(query),
     }
     return state
 
@@ -125,6 +171,7 @@ async def hotel_agent_node(state: TravelState) -> TravelState:
     extracted = state.get("extracted", {})
     city = extracted.get("destination") if state.get("route") == "combined" else extracted.get("city") or extracted.get("destination")
     budget = extracted.get("budget")
+    list_all = extracted.get("list_all")
     is_booking = "book" in query.lower() or "reserve" in query.lower()
 
     if is_booking:
@@ -156,18 +203,19 @@ async def hotel_agent_node(state: TravelState) -> TravelState:
         _append_event(state, "Hotel booking confirmed.", "BOOKING", "book_hotel", "SUCCEEDED")
         return state
 
-    if not city:
+    if not city and not list_all:
         state["missing_fields"] = ["destination city"]
         _append_event(state, "Destination city is needed for hotel search.", "CLARIFYING")
         state["response"] = "Which city should I search hotels in?"
         return state
 
-    tool_name = "search_hotels" if budget else "list_hotels"
-    args = {"city": city}
+    tool_name = "list_hotels" if list_all and not city else "search_hotels"
+    args = {"city": city} if city else {}
     if budget:
         args["max_price_usd"] = budget
 
-    _append_event(state, f"Searching hotels in {city} through MCP...", "SEARCHING", tool_name, "INVOKED")
+    location_text = f"in {city}" if city else "from all destinations"
+    _append_event(state, f"Searching hotels {location_text} through MCP...", "SEARCHING", tool_name, "INVOKED")
     result = await safe_call_mcp_tool("hotel", tool_name, args)
     if not result["ok"]:
         state.setdefault("errors", []).append(result["error"])
@@ -187,6 +235,8 @@ async def flight_agent_node(state: TravelState) -> TravelState:
     origin = extracted.get("origin")
     destination = extracted.get("destination")
     budget = extracted.get("budget")
+    date = extracted.get("date")
+    list_all = extracted.get("list_all")
     is_booking = "book" in query.lower() or "reserve" in query.lower()
 
     if is_booking:
@@ -218,6 +268,19 @@ async def flight_agent_node(state: TravelState) -> TravelState:
         _append_event(state, "Flight booking confirmed.", "BOOKING", "book_flight", "SUCCEEDED")
         return state
 
+    if list_all and not origin and not destination:
+        _append_event(state, "Listing available flights through MCP...", "SEARCHING", "list_flights", "INVOKED")
+        result = await safe_call_mcp_tool("flight", "list_flights", {})
+        if not result["ok"]:
+            state.setdefault("errors", []).append(result["error"])
+            _append_event(state, "Flight MCP call failed gracefully.", "SEARCHING", "list_flights", "FAILED")
+            state["response"] = f"I could not list flights right now because the flight service is unavailable. {result['error']}"
+            return state
+        flights = result["data"].get("flights", [])
+        state["flight_results"] = flights
+        _append_event(state, f"Flight MCP returned {len(flights)} result(s).", "SEARCHING", "list_flights", "SUCCEEDED")
+        return state
+
     missing = []
     if not origin:
         missing.append("origin city")
@@ -232,6 +295,8 @@ async def flight_agent_node(state: TravelState) -> TravelState:
     args = {"origin": origin, "destination": destination}
     if budget:
         args["max_price_usd"] = budget
+    if date:
+        args["date"] = date
 
     _append_event(state, f"Searching flights from {origin} to {destination} through MCP...", "SEARCHING", "search_flights", "INVOKED")
     result = await safe_call_mcp_tool("flight", "search_flights", args)

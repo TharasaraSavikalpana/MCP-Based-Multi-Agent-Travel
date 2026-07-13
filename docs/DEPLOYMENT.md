@@ -16,6 +16,9 @@ Backend:
 OPENAI_API_KEY=your-rotated-openai-key
 OPENAI_MODEL=gpt-4o-mini
 APP_ENV=production
+HOTEL_API_BASE=https://standing-fish-574.convex.site/hotels
+FLIGHT_API_BASE=https://standing-fish-574.convex.site/flights
+TRAVEL_PROVIDER_MODE=live_with_fallback
 ```
 
 Frontend:

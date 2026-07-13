@@ -4,6 +4,16 @@ TripWeaver keeps hotel and flight service logic outside the agent graph. The
 agents call MCP tools through `agents/mcp_client.py`; the provider-specific
 logic lives in standalone MCP servers under `mcp_servers/`.
 
+The MCP servers use these external service links by default:
+
+```text
+https://standing-fish-574.convex.site/hotels
+https://standing-fish-574.convex.site/flights
+```
+
+If the live provider is unavailable, the MCP servers fall back to local demo data
+so the conversation and viva demo keep working.
+
 ## MCP Tools
 
 Hotel MCP server: `mcp_servers/hotel_server.py`
@@ -36,6 +46,9 @@ Optional `.env` overrides:
 ```bash
 HOTEL_MCP_COMMAND="python mcp_servers/hotel_server.py"
 FLIGHT_MCP_COMMAND="python mcp_servers/flight_server.py"
+HOTEL_API_BASE="https://standing-fish-574.convex.site/hotels"
+FLIGHT_API_BASE="https://standing-fish-574.convex.site/flights"
+TRAVEL_PROVIDER_MODE="live_with_fallback"
 ```
 
 ## Swapping Providers

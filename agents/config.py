@@ -26,6 +26,15 @@ class Settings(BaseSettings):
 
     hotel_mcp_command: Optional[str] = Field(default=None, alias="HOTEL_MCP_COMMAND")
     flight_mcp_command: Optional[str] = Field(default=None, alias="FLIGHT_MCP_COMMAND")
+    hotel_api_base: str = Field(
+        default="https://standing-fish-574.convex.site/hotels",
+        alias="HOTEL_API_BASE",
+    )
+    flight_api_base: str = Field(
+        default="https://standing-fish-574.convex.site/flights",
+        alias="FLIGHT_API_BASE",
+    )
+    travel_provider_mode: str = Field(default="live_with_fallback", alias="TRAVEL_PROVIDER_MODE")
 
     @property
     def has_openai_key(self) -> bool:

@@ -10,6 +10,12 @@ services:
         value: production
       - key: OPENAI_MODEL
         value: gpt-4o-mini
+      - key: HOTEL_API_BASE
+        value: https://standing-fish-574.convex.site/hotels
+      - key: FLIGHT_API_BASE
+        value: https://standing-fish-574.convex.site/flights
+      - key: TRAVEL_PROVIDER_MODE
+        value: live_with_fallback
       - key: OPENAI_API_KEY
         sync: false
 
