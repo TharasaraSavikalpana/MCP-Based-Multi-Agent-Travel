@@ -1,11 +1,11 @@
 import asyncio
 import json
-from typing import Dict, List, Optional
+from typing import Any, Dict, List, Optional
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from agents.config import get_settings
 from agents.entity import TravelState
@@ -14,7 +14,7 @@ from agents.graph import travel_graph
 
 class ChatRequest(BaseModel):
     message: str
-    history: List[Dict[str, str]] = []
+    history: List[Dict[str, Any]] = Field(default_factory=list)
 
 
 class ChatResponse(BaseModel):
@@ -98,7 +98,7 @@ async def chat_stream(request: ChatRequest) -> StreamingResponse:
 async def _run_graph(request: ChatRequest) -> TravelState:
     initial_state: TravelState = {
         "user_query": request.message.strip(),
-        "history": request.history,
+        "history": _normalise_history(request.history),
         "events": [],
         "errors": [],
         "hotel_results": [],
@@ -106,6 +106,21 @@ async def _run_graph(request: ChatRequest) -> TravelState:
         "tool_status": "IDLE",
     }
     return await travel_graph.ainvoke(initial_state)
+
+
+def _normalise_history(history: List[Dict[str, Any]]) -> List[Dict[str, str]]:
+    clean_history: List[Dict[str, str]] = []
+    for item in history[-12:]:
+        if not isinstance(item, dict):
+            continue
+        role = str(item.get("role", "")).strip() or "user"
+        content = item.get("content", "")
+        if isinstance(content, dict):
+            content = content.get("text", "")
+        content = str(content or "").strip()
+        if role in {"user", "assistant", "system"} and content:
+            clean_history.append({"role": role, "content": content})
+    return clean_history
 
 
 def _sse(event: str, payload: Dict[str, object]) -> str:

@@ -1,3 +1,4 @@
+import html
 import re
 from typing import Any, Dict, List, Optional
 
@@ -108,31 +109,91 @@ def _wants_list_all(query: str) -> bool:
 
 def _format_hotels(hotels: List[Dict[str, Any]]) -> str:
     if not hotels:
-        return "I could not find matching hotels from the MCP hotel service."
-    lines = ["### Hotel Options"]
-    for index, hotel in enumerate(hotels, start=1):
-        amenities = ", ".join(hotel.get("amenities", [])[:4])
-        lines.append(
-            f"{index}. **{hotel['name']}** ({hotel['city']}, {hotel['country']}) - "
-            f"${hotel['price_per_night_usd']}/night, {hotel['rating']} rating, "
-            f"{hotel['available_rooms']} rooms available. Amenities: {amenities}. "
-            f"`Hotel ID: {hotel['id']}`"
+        return "<p class='tw-no-results'>I could not find matching hotels from the MCP hotel service.</p>"
+    
+    html_parts = ['<div class="tw-results-title">🏨 Hotel Options</div>', '<div class="tw-cards-grid">']
+    for hotel in hotels:
+        rating_val = hotel.get("rating", 0)
+        rating_stars = "★" * int(round(rating_val))
+        rating_empty = "☆" * (5 - int(round(rating_val)))
+        amenities_html = "".join(
+            f"<span class='tw-amenity-badge'>{_escape(a)}</span>"
+            for a in hotel.get("amenities", [])[:4]
         )
-    return "\n".join(lines)
+        name = _escape(hotel.get("name", "Unknown hotel"))
+        city = _escape(hotel.get("city", "Unknown city"))
+        country = _escape(hotel.get("country", "Unknown country"))
+        hotel_id = _escape(hotel.get("id", "UNKNOWN"))
+        
+        card = (
+            f'<div class="tw-hotel-card">'
+            f'  <div class="tw-hotel-header">'
+            f'    <span class="tw-hotel-name">{name}</span>'
+            f'    <span class="tw-hotel-rating" title="Rating: {rating_val}/5">{rating_stars}<span style="color:#cbd5e1;">{rating_empty}</span> ({rating_val})</span>'
+            f'  </div>'
+            f'  <div class="tw-hotel-location">📍 {city}, {country}</div>'
+            f'  <div class="tw-hotel-amenities">{amenities_html}</div>'
+            f'  <div class="tw-hotel-footer">'
+            f'    <div class="tw-hotel-rooms">🛏️ {hotel["available_rooms"]} rooms left</div>'
+            f'    <div class="tw-hotel-price">'
+            f'      <span class="tw-price-value">${hotel["price_per_night_usd"]}</span><span class="tw-price-unit">/night</span>'
+            f'    </div>'
+            f'  </div>'
+            f'  <div class="tw-hotel-id">Hotel ID: <code>{hotel_id}</code></div>'
+            f'</div>'
+        )
+        html_parts.append(card)
+    html_parts.append('</div>')
+    return "\n".join(html_parts)
 
 
 def _format_flights(flights: List[Dict[str, Any]]) -> str:
     if not flights:
-        return "I could not find matching flights from the MCP flight service."
-    lines = ["### Flight Options"]
-    for index, flight in enumerate(flights, start=1):
-        lines.append(
-            f"{index}. **{flight['airline']}** {flight['origin']} -> {flight['destination']} - "
-            f"depart {flight['departure']}, arrive {flight['arrival']}, "
-            f"${flight['price_usd']}, {flight['seats_available']} seats available. "
-            f"`Flight ID: {flight['id']}`"
+        return "<p class='tw-no-results'>I could not find matching flights from the MCP flight service.</p>"
+    
+    html_parts = ['<div class="tw-results-title">✈️ Flight Options</div>', '<div class="tw-cards-grid">']
+    for flight in flights:
+        origin_code = _escape(flight.get("origin_code") or flight.get("origin", "")[:3].upper())
+        dest_code = _escape(flight.get("destination_code") or flight.get("destination", "")[:3].upper())
+        airline = _escape(flight.get("airline", "Unknown airline"))
+        origin = _escape(flight.get("origin", "Unknown"))
+        destination = _escape(flight.get("destination", "Unknown"))
+        departure = _escape(flight.get("departure", "Time not provided"))
+        arrival = _escape(flight.get("arrival", "Time not provided"))
+        flight_id = _escape(flight.get("id", "UNKNOWN"))
+        
+        card = (
+            f'<div class="tw-flight-card">'
+            f'  <div class="tw-flight-header">'
+            f'    <span class="tw-flight-airline">✈️ {airline}</span>'
+            f'    <span class="tw-flight-price">${flight["price_usd"]}</span>'
+            f'  </div>'
+            f'  <div class="tw-flight-route">'
+            f'    <div class="tw-route-point">'
+            f'      <span class="tw-airport-code">{origin_code}</span>'
+            f'      <span class="tw-city-name">{origin}</span>'
+            f'    </div>'
+            f'    <div class="tw-route-line">'
+            f'      <div class="tw-line-arrow">⟶</div>'
+            f'    </div>'
+            f'    <div class="tw-route-point">'
+            f'      <span class="tw-airport-code">{dest_code}</span>'
+            f'      <span class="tw-city-name">{destination}</span>'
+            f'    </div>'
+            f'  </div>'
+            f'  <div class="tw-flight-times">'
+            f'    <div class="tw-time-row"><span>Departs:</span> <strong>{departure}</strong></div>'
+            f'    <div class="tw-time-row"><span>Arrives:</span> <strong>{arrival}</strong></div>'
+            f'  </div>'
+            f'  <div class="tw-flight-footer">'
+            f'    <div class="tw-flight-seats">🎟️ {flight["seats_available"]} seats available</div>'
+            f'    <div class="tw-flight-id">Flight ID: <code>{flight_id}</code></div>'
+            f'  </div>'
+            f'</div>'
         )
-    return "\n".join(lines)
+        html_parts.append(card)
+    html_parts.append('</div>')
+    return "\n".join(html_parts)
 
 
 async def router_node(state: TravelState) -> TravelState:
@@ -320,7 +381,7 @@ async def general_agent_node(state: TravelState) -> TravelState:
         try:
             result = await model.ainvoke(
                 [
-                    ("system", "You are TripWeaver, a concise and practical travel planning assistant."),
+                    ("system", "You are TripWeaver, a concise and practical travel planning assistant. Provide helpful advice or clarify the user's intent."),
                     ("human", query),
                 ]
             )
@@ -329,9 +390,17 @@ async def general_agent_node(state: TravelState) -> TravelState:
         except Exception as exc:
             state.setdefault("errors", []).append(f"LLM failed: {exc}")
 
+    # Fallback response if LLM is unavailable or failed (e.g. quota limit)
     state["response"] = (
-        "I can help with destination advice, hotel searches, flight searches, and bookings. "
-        "For live-style hotel or flight facts I will use the MCP specialist services instead of guessing."
+        "### TripWeaver Assistant\n\n"
+        "I'm here to help you plan your journey! Currently, my OpenAI LLM is offline or quota-limited, "
+        "but my specialized travel agent workflow is **fully functional**! You can use search and booking "
+        "prompts directly, and I will query the live services via MCP.\n\n"
+        "**Try these commands directly:**\n"
+        "- **Hotels**: `list all hotels` or `available hotels in Bangkok` or `Hotels in Paris under $200`\n"
+        "- **Flights**: `flight from BOM to DEL` or `list all flights`\n"
+        "- **Combined Plans**: `Plan hotel and flight from Colombo to Singapore under $500`\n"
+        "- **Bookings**: `Book hotel H-SIN-006 for Thara` or `Book flight F-LIVE-002 for John`"
     )
     return state
 
@@ -395,9 +464,44 @@ def _select_history_id(state: TravelState, prefix: str, query: str) -> Optional[
 
 def _format_booking(booking: Dict[str, Any]) -> str:
     if booking.get("status") != "confirmed":
-        return "### Booking\nThe booking was not confirmed: " + booking.get("reason", "Unknown reason.")
+        reason = _escape(booking.get("reason", "Unknown reason."))
+        return f"<div class='tw-booking-card error'><h3>Booking Failed</h3><p>{reason}</p></div>"
+    
+    # Check if it was flight or hotel
+    is_hotel = "hotel" in booking
+    item_details = ""
+    if is_hotel:
+        hotel = booking["hotel"]
+        item_details = (
+            f"<strong>Hotel:</strong> {_escape(hotel['name'])}<br>"
+            f"<strong>Guest Name:</strong> {_escape(booking['guest_name'])}<br>"
+            f"<strong>Rooms:</strong> {booking['rooms']} room(s) for {booking['nights']} night(s)"
+        )
+    else:
+        flight = booking["flight"]
+        item_details = (
+            f"<strong>Flight:</strong> {_escape(flight['airline'])} ({_escape(flight['origin'])} → {_escape(flight['destination'])})<br>"
+            f"<strong>Passenger Name:</strong> {_escape(booking['passenger_name'])}<br>"
+            f"<strong>Seats:</strong> {booking['seats']}"
+        )
+        
     return (
-        "### Booking Confirmed\n"
-        f"Confirmation: `{booking['confirmation_id']}`\n\n"
-        f"Total: **${booking['total_usd']}**"
+        f'<div class="tw-booking-card success">'
+        f'  <div class="tw-booking-header">🎉 Booking Confirmed</div>'
+        f'  <div class="tw-booking-body">'
+        f'    <div class="tw-booking-confirmation">'
+        f'      <span class="tw-booking-label">Confirmation Code</span>'
+        f'      <span class="tw-booking-code">{booking["confirmation_id"]}</span>'
+        f'    </div>'
+        f'    <div class="tw-booking-details">{item_details}</div>'
+        f'    <div class="tw-booking-total">'
+        f'      <span>Total Price:</span>'
+        f'      <span class="tw-total-value">${booking["total_usd"]}</span>'
+        f'    </div>'
+        f'  </div>'
+        f'</div>'
     )
+
+
+def _escape(value: Any) -> str:
+    return html.escape(str(value or ""), quote=True)
