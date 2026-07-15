@@ -406,6 +406,40 @@ button.primary:active, #send-btn:active {
   box-shadow: var(--tw-shadow-md);
 }
 
+/* Gradio's internal class names vary slightly between releases. These
+   stable selectors keep the actual product surface light and full-width. */
+#tw-chatbot,
+#tw-chatbot > div,
+#tw-chatbot [data-testid="chatbot"],
+#tw-chatbot .wrap,
+#tw-chatbot .message-wrap,
+#tw-chatbot .messages {
+  background: var(--tw-bg) !important;
+  border: none !important;
+}
+
+#tw-chatbot .message,
+#tw-chatbot [data-testid="bot"],
+#tw-chatbot [data-testid="user"] {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+#tw-chatbot [data-testid="bot"] {
+  background: var(--tw-card) !important;
+  color: var(--tw-ink) !important;
+  border: 1px solid var(--tw-border) !important;
+  border-radius: var(--tw-radius) !important;
+  box-shadow: var(--tw-shadow-sm) !important;
+}
+
+#tw-chatbot [data-testid="bot"] > div,
+#tw-chatbot [data-testid="bot"] .prose,
+#tw-chatbot [data-testid="bot"] .markdown {
+  width: 100% !important;
+  max-width: none !important;
+}
+
 .tw-activity-header {
   display: flex;
   align-items: center;
@@ -1490,6 +1524,20 @@ def _activity_html(events: List[Dict[str, object]]) -> str:
     return header + "".join(chips) + "</div>"
 
 
+def _record_activity(events: List[Dict[str, object]], event: Dict[str, object]) -> None:
+    signature = (
+        event.get("state"),
+        event.get("status"),
+        event.get("message"),
+    )
+    if any(
+        (item.get("state"), item.get("status"), item.get("message")) == signature
+        for item in events[-8:]
+    ):
+        return
+    events.append(event)
+
+
 def chat_with_tripweaver(message: str, chat_history: List[Dict[str, str]]) -> Generator:
     message = _message_content(message)
     chat_history = chat_history if isinstance(chat_history, list) else []
@@ -1525,14 +1573,16 @@ def chat_with_tripweaver(message: str, chat_history: List[Dict[str, str]]) -> Ge
 
             data = json.loads(raw_line.replace("data:", "", 1).strip())
             if current_event == "activity":
-                events.append(data)
+                _record_activity(events, data)
             elif current_event == "token":
                 chat_history[-1]["content"] += data.get("text", "")
             elif current_event == "error":
                 events.append({"state": "RESPONDING", "message": data.get("message"), "status": "FAILED"})
                 chat_history[-1]["content"] = data.get("message", "A backend error occurred.")
             elif current_event == "done":
-                events.extend(data.get("events", [])[-2:])
+                # Activity events have already streamed in real time. Do not
+                # append them again when the completion envelope arrives.
+                pass
 
             yield chat_history, _activity_html(events)
     except Exception as exc:
@@ -1591,6 +1641,7 @@ with gr.Blocks(title="TripWeaver | AI Travel Planner") as demo:
         with gr.Column(scale=3, elem_classes=["panel"]):
             chatbot = gr.Chatbot(
                 height=520,
+                elem_id="tw-chatbot",
                 buttons=["copy", "copy_all"],
                 label="Travel planning chat",
                 sanitize_html=False,
