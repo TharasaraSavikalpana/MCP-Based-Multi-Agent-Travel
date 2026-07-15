@@ -36,13 +36,19 @@ Never commit `.env`. Commit only `.env.example`.
 2. Open Render and create a new Blueprint from `render.yaml`, or create two web services manually.
 3. For the backend service:
    - Build command: `pip install -r requirements.txt`
-   - Start command: `uvicorn main:app --host 0.0.0.0 --port $PORT`
+   - Start command: `python -m uvicorn main:app --host 0.0.0.0 --port $PORT`
    - Add `OPENAI_API_KEY` as a secret environment variable.
 4. For the frontend service:
    - Build command: `pip install -r requirements.txt`
    - Start command: `python frontend.py`
    - Set `BACKEND_URL` to the deployed backend URL.
 5. Test `/health` on the backend, then open the frontend URL.
+
+On Render, deploy the backend first. Copy its public URL into the frontend's
+`BACKEND_URL` variable, redeploy the frontend, and verify that the frontend
+can complete one hotel search, one flight search, and one combined plan. Keep
+`OPENAI_API_KEY` only in Render's environment-variable form; never paste it in
+the repository or a screenshot.
 
 ## Hugging Face Spaces Frontend Option
 

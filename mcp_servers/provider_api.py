@@ -141,6 +141,12 @@ def normalize_flight(item: Dict[str, Any], index: int) -> Dict[str, Any]:
     arrival_time = first_value(item, ["arrival", "arrivalTime", "arrival_time"], "")
     departure = " ".join(part for part in [departure_date, departure_time] if part).strip() or "Time not provided"
     arrival = arrival_time or "Time not provided"
+    stops = first_value(item, ["stops", "stopCount", "stop_count"], None)
+    if stops is not None:
+        try:
+            stops = int(stops)
+        except Exception:
+            stops = None
 
     return {
         "id": str(first_value(item, ["id", "_id", "flightId", "flightNumber", "flightNo"], f"F-LIVE-{index:03d}")).upper(),
@@ -151,6 +157,7 @@ def normalize_flight(item: Dict[str, Any], index: int) -> Dict[str, Any]:
         "destination_code": str(first_value(item, ["destinationCode", "destination_code"], "")),
         "departure": departure,
         "arrival": arrival,
+        "stops": stops,
         "price_usd": price,
         "seats_available": seats,
         "source": "live-provider",

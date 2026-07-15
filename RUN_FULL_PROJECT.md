@@ -61,7 +61,7 @@ available hotels in Bangkok
 flight from BOM to DEL
 list all flights
 Plan hotel and flight from Colombo to Singapore under $500
-Book hotel H-SIN-006 for Thara
+Book hotel H-SIN-006 for Alex Morgan
 ```
 
 ## 4. What Is Running

@@ -15,416 +15,825 @@ if not BACKEND_URL.startswith(("http://", "https://")):
 
 
 THEME_CSS = """
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 
+/* ===== CSS RESET & ROOT ===== */
 :root {
-  --tw-font: 'Plus Jakarta Sans', sans-serif;
+  --tw-font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --tw-ink: #0f172a;
+  --tw-ink-light: #334155;
   --tw-muted: #64748b;
-  --tw-card: rgba(255, 255, 255, 0.85);
-  --tw-border: rgba(15, 23, 42, 0.08);
+  --tw-subtle: #94a3b8;
+  --tw-card: #ffffff;
+  --tw-card-glass: rgba(255, 255, 255, 0.92);
+  --tw-border: rgba(15, 23, 42, 0.06);
+  --tw-border-hover: rgba(15, 23, 42, 0.12);
   --tw-ocean: #0ea5e9;
-  --tw-sky: #0284c7;
+  --tw-ocean-deep: #0284c7;
+  --tw-sky: #38bdf8;
   --tw-mint: #10b981;
+  --tw-mint-light: #d1fae5;
   --tw-coral: #f97316;
-  --tw-gold: #f59e0b;
-  --tw-bg-grad: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 50%, #f0fdf4 100%);
-  --tw-hero-grad: linear-gradient(135deg, #0369a1 0%, #0284c7 40%, #0e7490 100%);
+  --tw-amber: #f59e0b;
+  --tw-red: #ef4444;
+  --tw-bg: #f8fafc;
+  --tw-bg-warm: #fafaf9;
+  --tw-hero-grad: linear-gradient(135deg, #0c4a6e 0%, #0369a1 35%, #0e7490 70%, #155e75 100%);
+  --tw-radius: 16px;
+  --tw-radius-sm: 10px;
+  --tw-radius-xs: 6px;
+  --tw-shadow-sm: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.02);
+  --tw-shadow-md: 0 4px 12px rgba(0,0,0,0.05), 0 2px 4px rgba(0,0,0,0.02);
+  --tw-shadow-lg: 0 12px 32px rgba(0,0,0,0.06), 0 4px 8px rgba(0,0,0,0.03);
+  --tw-shadow-xl: 0 20px 50px rgba(0,0,0,0.08);
 }
 
+/* ===== GLOBAL RESETS - HIDE GRADIO ===== */
 body, .gradio-container {
   font-family: var(--tw-font) !important;
   min-height: 100vh;
-  background: var(--tw-bg-grad) !important;
+  background: var(--tw-bg) !important;
   color: var(--tw-ink);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.gradio-container {
+  max-width: 100% !important;
+  padding: 0 !important;
+  margin: 0 !important;
 }
 
 .main {
-  max-width: 1400px !important;
-  margin: 0 auto;
-  padding: 20px 0;
+  max-width: 1360px !important;
+  margin: 0 auto !important;
+  padding: 0 24px !important;
 }
 
-#hero {
+/* Hide Gradio branding, footers, borders */
+footer { display: none !important; }
+.gradio-container > .wrap { border: none !important; }
+.contain { border: none !important; gap: 0 !important; }
+.gap { gap: 16px !important; }
+.block { border: none !important; box-shadow: none !important; background: transparent !important; }
+.block .wrap { border: none !important; }
+.label-wrap { display: none !important; }
+.form { border: none !important; background: transparent !important; gap: 12px !important; }
+#component-0 { border: none !important; }
+.gradio-container .contain > .gap > .block:first-child > .block { border: none !important; }
+
+/* ===== HERO SECTION ===== */
+#tw-hero {
   position: relative;
   overflow: hidden;
-  padding: 40px;
-  border-radius: 20px;
+  padding: 48px 48px 40px;
+  border-radius: 0 0 28px 28px;
   color: white;
   background: var(--tw-hero-grad);
-  box-shadow: 0 20px 40px rgba(2, 132, 199, 0.15);
-  margin-bottom: 25px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  margin-bottom: 28px;
+  border: none;
 }
 
-#hero h1 {
-  font-size: 52px;
-  font-weight: 800;
-  margin: 0 0 10px;
-  letter-spacing: -1px;
-  background: linear-gradient(to right, #ffffff, #e0f2fe);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+#tw-hero::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -10%;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(255,255,255,0.06) 0%, transparent 70%);
+  pointer-events: none;
 }
 
-#hero p {
-  max-width: 750px;
-  margin: 0;
-  font-size: 16px;
-  line-height: 1.6;
-  color: #e0f2fe;
+#tw-hero::after {
+  content: '';
+  position: absolute;
+  bottom: -30%;
+  left: 10%;
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(56,189,248,0.08) 0%, transparent 70%);
+  pointer-events: none;
 }
 
-#hero .badge {
+.tw-hero-badge {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  margin-bottom: 15px;
-  padding: 6px 14px;
+  gap: 6px;
+  margin-bottom: 16px;
+  padding: 5px 14px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.15);
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  font-size: 12px;
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.18);
+  font-size: 11px;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: 1.5px;
+  color: rgba(255,255,255,0.9);
 }
 
-#hero .stats {
+.tw-hero-title {
+  font-size: 48px;
+  font-weight: 900;
+  margin: 0 0 12px;
+  letter-spacing: -1.5px;
+  line-height: 1.05;
+  background: linear-gradient(135deg, #ffffff 0%, #bae6fd 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.tw-hero-desc {
+  max-width: 620px;
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.7;
+  color: rgba(224,242,254,0.85);
+  font-weight: 400;
+}
+
+.tw-hero-chips {
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
-  margin-top: 25px;
+  gap: 10px;
+  margin-top: 24px;
 }
 
-#hero .stat {
-  padding: 8px 16px;
-  border-radius: 10px;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  font-size: 13px;
+.tw-hero-chip {
+  padding: 7px 16px;
+  border-radius: var(--tw-radius-sm);
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.12);
+  font-size: 12px;
   font-weight: 600;
-  color: #ffffff;
-}
-
-.panel {
-  border-radius: 20px !important;
-  border: 1px solid var(--tw-border) !important;
-  background: var(--tw-card) !important;
-  box-shadow: 0 15px 35px rgba(15, 23, 42, 0.05) !important;
-  backdrop-filter: blur(20px);
-  padding: 20px !important;
-}
-
-#activity-panel {
-  min-height: 200px;
-  border: 1px solid rgba(14, 165, 233, 0.15);
-  background: rgba(255, 255, 255, 0.85);
-  border-radius: 20px;
-  padding: 20px;
-  box-shadow: 0 10px 25px rgba(14, 165, 233, 0.05);
-  backdrop-filter: blur(10px);
-}
-
-#activity-panel b {
-  display: block;
-  margin-bottom: 12px;
-  color: var(--tw-ink);
-  font-size: 16px;
-  font-weight: 700;
-  border-bottom: 1px solid rgba(0,0,0,0.05);
-  padding-bottom: 8px;
-}
-
-.activity-chip {
-  display: flex;
-  align-items: center;
-  margin: 10px 0;
-  padding: 10px 14px;
-  border-radius: 12px;
-  background: #f0f9ff;
-  color: #0369a1;
-  font-size: 13px;
-  font-weight: 600;
-  border: 1px solid #bae6fd;
+  color: rgba(255,255,255,0.9);
   transition: all 0.2s ease;
 }
 
-.activity-chip.good { background: #ecfdf5; color: #047857; border-color: #a7f3d0; }
-.activity-chip.warn { background: #fff7ed; color: #c2410c; border-color: #ffedd5; }
-.activity-chip.run {
-  background: #fefce8;
-  color: #a16207;
-  border-color: #fef08a;
-  animation: pulse-border 1.5s infinite;
+.tw-hero-chip:hover {
+  background: rgba(255,255,255,0.18);
+  transform: translateY(-1px);
 }
 
-@keyframes pulse-border {
-  0% { border-color: #fef08a; box-shadow: 0 0 0 0 rgba(234, 179, 8, 0.2); }
-  70% { border-color: #eab308; box-shadow: 0 0 0 6px rgba(234, 179, 8, 0); }
-  100% { border-color: #fef08a; box-shadow: 0 0 0 0 rgba(234, 179, 8, 0); }
+/* ===== NAVBAR ===== */
+#tw-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 48px;
+  background: rgba(255,255,255,0.95);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--tw-border);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.tw-nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--tw-ink);
+  letter-spacing: -0.5px;
+}
+
+.tw-nav-brand-icon {
+  width: 32px;
+  height: 32px;
+  background: var(--tw-hero-grad);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 16px;
+}
+
+.tw-nav-links {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.tw-nav-link {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--tw-muted);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.tw-nav-link:hover { color: var(--tw-ink); }
+
+.tw-nav-status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  font-size: 11px;
+  font-weight: 700;
+  color: #047857;
+}
+
+.tw-nav-dot {
+  width: 6px;
+  height: 6px;
+  background: #10b981;
+  border-radius: 50%;
+  animation: tw-pulse-dot 2s infinite;
+}
+
+@keyframes tw-pulse-dot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+/* ===== MAIN LAYOUT ===== */
+.tw-main-grid {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 24px;
+  margin-top: 0;
+  align-items: start;
+}
+
+/* ===== CHAT PANEL ===== */
+.panel {
+  border-radius: var(--tw-radius) !important;
+  border: 1px solid var(--tw-border) !important;
+  background: var(--tw-card) !important;
+  box-shadow: var(--tw-shadow-md) !important;
+  padding: 0 !important;
+  overflow: hidden;
+}
+
+/* Chatbot container - remove black background */
+.chatbot {
+  background: var(--tw-bg) !important;
+  border: none !important;
+}
+
+.chatbot .messages {
+  background: var(--tw-bg) !important;
+}
+
+.chatbot .message {
+  border: none !important;
+  font-size: 14px !important;
+  line-height: 1.6 !important;
+}
+
+.chatbot .user {
+  background: linear-gradient(135deg, #0369a1, #0284c7) !important;
+  color: white !important;
+  border-radius: 16px 16px 4px 16px !important;
+  padding: 12px 18px !important;
+  max-width: 85% !important;
+  box-shadow: 0 4px 12px rgba(3, 105, 161, 0.2) !important;
+}
+
+.chatbot .bot {
+  background: var(--tw-card) !important;
+  color: var(--tw-ink) !important;
+  border-radius: 16px 16px 16px 4px !important;
+  padding: 16px 20px !important;
+  max-width: 95% !important;
+  box-shadow: var(--tw-shadow-sm) !important;
+  border: 1px solid var(--tw-border) !important;
+}
+
+/* Fix empty black space in chatbot */
+.chatbot .message-wrap {
+  background: var(--tw-bg) !important;
+  min-height: 0 !important;
+}
+
+div[class*="chatbot"] {
+  background: var(--tw-bg) !important;
+}
+
+div[class*="message-wrap"], div[data-testid="chatbot"] {
+  background: var(--tw-bg) !important;
+}
+
+/* ===== TEXT INPUT ===== */
+.tw-input-area {
+  padding: 16px 20px;
+  background: var(--tw-card);
+  border-top: 1px solid var(--tw-border);
+}
+
+textarea, input[type="text"] {
+  border-radius: var(--tw-radius-sm) !important;
+  border: 1.5px solid rgba(15, 23, 42, 0.08) !important;
+  padding: 14px 16px !important;
+  font-size: 14px !important;
+  font-family: var(--tw-font) !important;
+  background: var(--tw-bg) !important;
+  transition: all 0.2s ease !important;
+  color: var(--tw-ink) !important;
+}
+
+textarea:focus, input[type="text"]:focus {
+  border-color: var(--tw-ocean) !important;
+  box-shadow: 0 0 0 3px rgba(14,165,233,0.1) !important;
+  background: white !important;
+}
+
+textarea::placeholder { color: var(--tw-subtle) !important; font-weight: 400 !important; }
+
+/* ===== BUTTONS ===== */
+.quick-row {
+  padding: 0 20px 12px !important;
 }
 
 .quick-row button {
-  border-radius: 12px !important;
-  min-height: 48px !important;
-  font-weight: 700 !important;
-  border: 1px solid rgba(15, 23, 42, 0.08) !important;
-  background: #ffffff !important;
-  color: var(--tw-ink) !important;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.02) !important;
+  border-radius: var(--tw-radius-sm) !important;
+  min-height: 42px !important;
+  font-weight: 600 !important;
+  font-size: 13px !important;
+  border: 1px solid var(--tw-border) !important;
+  background: var(--tw-card) !important;
+  color: var(--tw-ink-light) !important;
+  box-shadow: var(--tw-shadow-sm) !important;
   transition: all 0.2s ease !important;
+  font-family: var(--tw-font) !important;
 }
 
 .quick-row button:hover {
   transform: translateY(-2px) !important;
   border-color: var(--tw-ocean) !important;
-  box-shadow: 0 6px 12px rgba(14, 165, 233, 0.1) !important;
+  box-shadow: 0 6px 16px rgba(14,165,233,0.1) !important;
+  color: var(--tw-ocean-deep) !important;
 }
 
 button.primary, #send-btn {
-  min-height: 50px !important;
-  border-radius: 12px !important;
-  background: linear-gradient(135deg, #0ea5e9, #0284c7) !important;
+  min-height: 48px !important;
+  border-radius: var(--tw-radius-sm) !important;
+  background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%) !important;
   border: none !important;
-  color: #ffffff !important;
-  font-weight: 750 !important;
-  font-size: 15px !important;
-  box-shadow: 0 10px 20px rgba(2, 132, 199, 0.2) !important;
-  transition: all 0.2s ease !important;
+  color: white !important;
+  font-weight: 700 !important;
+  font-size: 14px !important;
+  font-family: var(--tw-font) !important;
+  box-shadow: 0 8px 24px rgba(2,132,199,0.2) !important;
+  transition: all 0.25s ease !important;
+  letter-spacing: 0.3px !important;
 }
 
 button.primary:hover, #send-btn:hover {
   transform: translateY(-2px) !important;
-  box-shadow: 0 12px 24px rgba(2, 132, 199, 0.3) !important;
+  box-shadow: 0 12px 32px rgba(2,132,199,0.3) !important;
+  background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%) !important;
 }
 
-textarea, input {
-  border-radius: 12px !important;
-  border: 1px solid rgba(15, 23, 42, 0.1) !important;
-  padding: 12px !important;
-  font-size: 14px !important;
+button.primary:active, #send-btn:active {
+  transform: translateY(0) !important;
 }
 
-textarea:focus, input:focus {
-  border-color: var(--tw-ocean) !important;
-  box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.15) !important;
-}
-
-.pro-note {
-  padding: 20px;
-  border-radius: 20px;
-  background: rgba(255, 255, 255, 0.85);
+/* ===== ACTIVITY PANEL ===== */
+#activity-panel {
   border: 1px solid var(--tw-border);
-  color: var(--tw-muted);
-  font-size: 14px;
-  line-height: 1.6;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.02);
-  margin-top: 20px;
+  background: var(--tw-card);
+  border-radius: var(--tw-radius);
+  padding: 20px;
+  box-shadow: var(--tw-shadow-md);
 }
 
-.pro-note b {
-  color: var(--tw-ink);
+.tw-activity-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--tw-border);
+}
+
+.tw-activity-title {
   font-size: 15px;
-  display: block;
-  margin-bottom: 8px;
-}
-
-/* RESULTS LAYOUT STYLES */
-.tw-results-title {
-  font-size: 18px;
-  font-weight: 850;
+  font-weight: 700;
   color: var(--tw-ink);
-  margin: 20px 0 10px;
-  padding-bottom: 6px;
+  letter-spacing: -0.3px;
+}
+
+.tw-activity-icon {
+  font-size: 16px;
+}
+
+.activity-chip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 8px 0;
+  padding: 10px 14px;
+  border-radius: var(--tw-radius-sm);
+  font-size: 12.5px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  animation: tw-fadeSlideIn 0.3s ease;
+  line-height: 1.4;
+}
+
+@keyframes tw-fadeSlideIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.activity-chip .chip-icon {
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.activity-chip.good {
+  background: #ecfdf5;
+  color: #047857;
+  border: 1px solid #a7f3d0;
+}
+
+.activity-chip.warn {
+  background: #fef2f2;
+  color: #b91c1c;
+  border: 1px solid #fecaca;
+}
+
+.activity-chip.run {
+  background: #fffbeb;
+  color: #92400e;
+  border: 1px solid #fde68a;
+  animation: tw-fadeSlideIn 0.3s ease, tw-pulse-border 2s infinite 0.3s;
+}
+
+@keyframes tw-pulse-border {
+  0%, 100% { border-color: #fde68a; box-shadow: none; }
+  50% { border-color: #f59e0b; box-shadow: 0 0 0 3px rgba(245,158,11,0.08); }
+}
+
+.activity-chip.idle {
+  background: #f1f5f9;
+  color: #475569;
+  border: 1px solid #e2e8f0;
+}
+
+/* ===== DEMO PROMPTS SIDEBAR ===== */
+.tw-sidebar-section {
+  border: 1px solid var(--tw-border);
+  background: var(--tw-card);
+  border-radius: var(--tw-radius);
+  padding: 20px;
+  box-shadow: var(--tw-shadow-sm);
+  margin-top: 16px;
+}
+
+.tw-sidebar-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--tw-ink);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.tw-demo-prompt {
+  display: block;
+  padding: 8px 12px;
+  margin: 6px 0;
+  border-radius: var(--tw-radius-xs);
+  background: var(--tw-bg);
+  color: var(--tw-ink-light);
+  font-size: 12.5px;
+  font-weight: 500;
+  border: 1px solid transparent;
+  transition: all 0.2s ease;
+  cursor: default;
+  line-height: 1.4;
+}
+
+.tw-demo-prompt:hover {
+  border-color: var(--tw-border-hover);
+  background: #f0f9ff;
+}
+
+.tw-demo-prompt code {
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  font-size: 11.5px;
+}
+
+/* ===== FOOTER ===== */
+#tw-footer {
+  text-align: center;
+  padding: 32px 20px;
+  margin-top: 40px;
+  border-top: 1px solid var(--tw-border);
+  color: var(--tw-subtle);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+#tw-footer a {
+  color: var(--tw-ocean);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+/* ===== RESULT CARDS STYLING ===== */
+
+/* Section Headers */
+.tw-section-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 8px 0 16px;
+  padding-bottom: 10px;
   border-bottom: 2px solid var(--tw-ocean);
-  display: inline-block;
 }
 
-.tw-no-results {
+.tw-section-icon {
+  font-size: 20px;
+}
+
+.tw-section-title {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--tw-ink);
+  letter-spacing: -0.4px;
+}
+
+.tw-section-count {
+  margin-left: auto;
+  font-size: 12px;
+  font-weight: 600;
   color: var(--tw-muted);
-  font-style: italic;
-  padding: 15px;
-  background: #f8fafc;
-  border-radius: 12px;
-  border: 1px dashed rgba(0,0,0,0.05);
+  background: #f1f5f9;
+  padding: 3px 10px;
+  border-radius: 999px;
 }
 
+/* Cards Grid */
 .tw-cards-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   gap: 16px;
-  margin-top: 10px;
+  margin-top: 8px;
 }
 
 /* Hotel Card */
 .tw-hotel-card {
-  background: #ffffff;
-  border-radius: 16px;
-  border: 1px solid rgba(15, 23, 42, 0.06);
-  padding: 16px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  transition: all 0.25s ease;
-  position: relative;
+  background: var(--tw-card);
+  border-radius: var(--tw-radius);
+  border: 1px solid var(--tw-border);
   overflow: hidden;
+  transition: all 0.3s ease;
+  animation: tw-cardFadeIn 0.4s ease;
+}
+
+@keyframes tw-cardFadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .tw-hotel-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
-  border-color: rgba(16, 185, 129, 0.2);
+  box-shadow: var(--tw-shadow-lg);
+  border-color: rgba(16,185,129,0.2);
 }
 
-.tw-hotel-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 4px;
-  height: 100%;
-  background: var(--tw-mint);
+.tw-card-image {
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.tw-card-image-label {
+  font-size: 36px;
+  opacity: 0.6;
+}
+
+.tw-card-body {
+  padding: 14px 16px 12px;
 }
 
 .tw-hotel-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  gap: 10px;
-  margin-bottom: 8px;
+  gap: 8px;
+  margin-bottom: 6px;
 }
 
 .tw-hotel-name {
-  font-size: 15px;
-  font-weight: 750;
+  font-size: 14px;
+  font-weight: 700;
   color: var(--tw-ink);
   line-height: 1.3;
 }
 
 .tw-hotel-rating {
-  font-size: 12px;
+  font-size: 11px;
   color: #f59e0b;
   font-weight: 700;
   white-space: nowrap;
 }
 
-.tw-hotel-location {
-  font-size: 13px;
+.tw-hotel-rating small {
   color: var(--tw-muted);
-  margin-bottom: 12px;
+  font-weight: 600;
+}
+
+.tw-hotel-location {
+  font-size: 12px;
+  color: var(--tw-muted);
+  margin-bottom: 10px;
 }
 
 .tw-hotel-amenities {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
-  margin-bottom: 16px;
+  gap: 5px;
+  margin-bottom: 8px;
 }
 
-.tw-amenity-badge {
-  font-size: 11px;
+.tw-amenity-chip {
+  font-size: 10px;
   background: #f1f5f9;
   color: #475569;
-  padding: 4px 8px;
-  border-radius: 6px;
+  padding: 3px 8px;
+  border-radius: var(--tw-radius-xs);
   font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.tw-amenity-icon {
+  font-size: 11px;
+}
+
+.tw-hotel-extras {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-bottom: 10px;
+}
+
+.tw-info-tag {
+  font-size: 10px;
+  color: #047857;
+  font-weight: 600;
+}
+
+.tw-info-popular {
+  color: #d97706;
 }
 
 .tw-hotel-footer {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: auto;
-  border-top: 1px solid rgba(0,0,0,0.04);
-  padding-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid var(--tw-border);
 }
 
-.tw-hotel-rooms {
-  font-size: 12px;
-  color: #059669;
-  font-weight: 600;
+.tw-avail-badge {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: var(--tw-radius-xs);
 }
+
+.tw-avail-high { background: #ecfdf5; color: #047857; }
+.tw-avail-low { background: #fffbeb; color: #92400e; }
+.tw-avail-none { background: #fef2f2; color: #b91c1c; }
 
 .tw-hotel-price {
   text-align: right;
 }
 
 .tw-price-value {
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 800;
   color: var(--tw-ink);
 }
 
 .tw-price-unit {
-  font-size: 12px;
+  font-size: 11px;
   color: var(--tw-muted);
+  font-weight: 500;
+}
+
+.tw-card-action-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px dashed var(--tw-border);
 }
 
 .tw-hotel-id, .tw-flight-id {
   font-size: 10px;
-  color: #94a3b8;
-  margin-top: 8px;
-  text-align: right;
+  color: var(--tw-subtle);
 }
 
 .tw-hotel-id code, .tw-flight-id code {
-  background: #f8fafc;
-  padding: 2px 4px;
-  border-radius: 4px;
-  color: #64748b;
-  font-weight: 600;
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  font-size: 9px;
+  background: #f1f5f9;
+  padding: 1px 4px;
+  border-radius: 3px;
+  color: var(--tw-muted);
 }
 
-/* Flight Card */
-.tw-flight-card {
-  background: #ffffff;
-  border-radius: 16px;
-  border: 1px solid rgba(15, 23, 42, 0.06);
-  padding: 16px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+.tw-select-btn {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--tw-ocean);
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.tw-select-btn:hover { color: var(--tw-ocean-deep); }
+
+.tw-more-results {
+  text-align: center;
+  font-size: 12px;
+  color: var(--tw-muted);
+  padding: 12px;
+  font-weight: 500;
+  font-style: italic;
+}
+
+/* ===== FLIGHT CARDS ===== */
+.tw-flight-list {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  transition: all 0.25s ease;
-  position: relative;
-  overflow: hidden;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.tw-flight-card {
+  background: var(--tw-card);
+  border-radius: var(--tw-radius);
+  border: 1px solid var(--tw-border);
+  padding: 16px 20px;
+  transition: all 0.3s ease;
+  animation: tw-cardFadeIn 0.4s ease;
 }
 
 .tw-flight-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
-  border-color: rgba(14, 165, 233, 0.2);
+  transform: translateY(-3px);
+  box-shadow: var(--tw-shadow-lg);
+  border-color: rgba(14,165,233,0.2);
 }
 
-.tw-flight-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 4px;
-  height: 100%;
-  background: var(--tw-ocean);
-}
-
-.tw-flight-header {
+.tw-flight-top {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 12px;
+  margin-bottom: 16px;
 }
 
-.tw-flight-airline {
-  font-size: 14px;
-  font-weight: 750;
+.tw-flight-airline-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tw-airline-icon {
+  font-size: 16px;
+  color: var(--tw-ocean);
+}
+
+.tw-airline-name {
+  font-size: 15px;
+  font-weight: 700;
   color: var(--tw-ink);
 }
 
-.tw-flight-price {
-  font-size: 18px;
+.tw-flight-price-tag {
+  text-align: right;
+}
+
+.tw-price-amount {
+  font-size: 22px;
   font-weight: 800;
-  color: var(--tw-ocean);
+  color: var(--tw-ocean-deep);
+  display: block;
+  line-height: 1;
+}
+
+.tw-price-label {
+  font-size: 10px;
+  color: var(--tw-muted);
+  font-weight: 500;
 }
 
 .tw-flight-route {
@@ -432,159 +841,555 @@ textarea:focus, input:focus {
   align-items: center;
   justify-content: space-between;
   background: #f8fafc;
-  padding: 10px 14px;
-  border-radius: 10px;
+  border: 1px solid var(--tw-border);
+  padding: 16px 20px;
+  border-radius: var(--tw-radius-sm);
   margin-bottom: 12px;
 }
 
-.tw-route-point {
-  display: flex;
-  flex-direction: column;
+.tw-route-origin, .tw-route-dest {
+  text-align: center;
+  min-width: 70px;
 }
 
 .tw-airport-code {
-  font-size: 18px;
-  font-weight: 800;
+  font-size: 24px;
+  font-weight: 900;
   color: var(--tw-ink);
-  letter-spacing: 0.5px;
+  letter-spacing: 1px;
+  line-height: 1;
 }
 
-.tw-city-name {
+.tw-city-label {
   font-size: 11px;
   color: var(--tw-muted);
-  margin-top: 2px;
+  margin-top: 4px;
+  font-weight: 500;
 }
 
-.tw-route-line {
-  flex-grow: 1;
+.tw-time-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--tw-ink-light);
+  margin-top: 6px;
+}
+
+.tw-route-connector {
+  flex: 1;
   text-align: center;
-  position: relative;
-  margin: 0 10px;
+  padding: 0 12px;
 }
 
-.tw-line-arrow {
-  font-size: 16px;
-  color: #94a3b8;
-}
-
-.tw-flight-times {
-  font-size: 12px;
-  color: #475569;
-  margin-bottom: 12px;
-}
-
-.tw-time-row {
+.tw-route-line-visual {
   display: flex;
-  justify-content: space-between;
-  margin: 4px 0;
-}
-
-.tw-time-row span {
-  color: var(--tw-muted);
-}
-
-.tw-flight-footer {
-  display: flex;
-  justify-content: space-between;
   align-items: center;
-  border-top: 1px solid rgba(0,0,0,0.04);
-  padding-top: 10px;
-  margin-top: auto;
+  justify-content: center;
+  gap: 0;
 }
 
-.tw-flight-seats {
-  font-size: 11px;
-  color: #d97706;
-  font-weight: 600;
-  background: #fffbeb;
-  padding: 3px 8px;
-  border-radius: 6px;
+.tw-dot {
+  width: 6px;
+  height: 6px;
+  background: var(--tw-ocean);
+  border-radius: 50%;
+  flex-shrink: 0;
 }
 
-/* Booking Card */
-.tw-booking-card {
-  border-radius: 16px;
-  padding: 20px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.04);
-  border: 1px solid rgba(0,0,0,0.05);
-  margin: 15px 0;
-  max-width: 480px;
+.tw-dash-line {
+  flex: 1;
+  height: 2px;
+  background: repeating-linear-gradient(90deg, #cbd5e1 0px, #cbd5e1 4px, transparent 4px, transparent 8px);
+  min-width: 20px;
 }
 
-.tw-booking-card.success {
-  background: linear-gradient(135deg, #f0fdf4 0%, #ffffff 100%);
-  border-left: 5px solid var(--tw-mint);
+.tw-plane-mid {
+  font-size: 14px;
+  color: var(--tw-ocean);
+  margin: 0 4px;
+  flex-shrink: 0;
 }
 
-.tw-booking-card.error {
-  background: linear-gradient(135deg, #fef2f2 0%, #ffffff 100%);
-  border-left: 5px solid #ef4444;
-}
-
-.tw-booking-header {
-  font-size: 18px;
-  font-weight: 800;
-  color: #065f46;
-  margin-bottom: 15px;
-}
-
-.tw-booking-confirmation {
-  background: #ffffff;
-  border: 1px solid #d1fae5;
-  border-radius: 10px;
-  padding: 12px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-bottom: 15px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.01);
-}
-
-.tw-booking-label {
-  font-size: 11px;
-  color: var(--tw-muted);
+.tw-route-type {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--tw-mint);
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  font-weight: 700;
+  margin-top: 6px;
 }
 
-.tw-booking-code {
+.tw-flight-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 10px;
+  border-top: 1px solid var(--tw-border);
+}
+
+.tw-seats-badge {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: var(--tw-radius-xs);
+}
+
+.tw-seats-high { background: #ecfdf5; color: #047857; }
+.tw-seats-low { background: #fffbeb; color: #92400e; }
+.tw-seats-none { background: #fef2f2; color: #b91c1c; }
+
+/* ===== TRIP SUMMARY ===== */
+.tw-trip-summary {
+  background: linear-gradient(135deg, #f0f9ff 0%, #ffffff 50%, #ecfdf5 100%);
+  border: 1px solid rgba(14,165,233,0.15);
+  border-radius: var(--tw-radius);
+  overflow: hidden;
+  margin-top: 16px;
+  animation: tw-cardFadeIn 0.5s ease;
+}
+
+.tw-summary-header {
+  padding: 20px 24px 16px;
+  border-bottom: 1px solid var(--tw-border);
+}
+
+.tw-summary-title {
   font-size: 20px;
-  font-weight: 850;
-  color: #047857;
-  letter-spacing: 1px;
+  font-weight: 800;
+  color: var(--tw-ink);
+  letter-spacing: -0.5px;
+}
+
+.tw-summary-dest {
+  font-size: 14px;
+  color: var(--tw-muted);
+  font-weight: 500;
   margin-top: 4px;
 }
 
-.tw-booking-details {
-  font-size: 13px;
-  color: #374151;
-  line-height: 1.6;
-  padding: 12px 0;
-  border-top: 1px solid rgba(0,0,0,0.04);
-  border-bottom: 1px solid rgba(0,0,0,0.04);
+.tw-budget-ok {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 700;
+  color: #047857;
+  background: #ecfdf5;
+  padding: 3px 10px;
+  border-radius: 999px;
+  margin-top: 8px;
 }
 
-.tw-booking-total {
+.tw-budget-over {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 700;
+  color: #b91c1c;
+  background: #fef2f2;
+  padding: 3px 10px;
+  border-radius: 999px;
+  margin-top: 8px;
+}
+
+.tw-map-container {
+  padding: 0 24px;
+  margin: 16px 0;
+}
+
+.tw-map-container iframe {
+  border-radius: var(--tw-radius-sm);
+  border: 1px solid var(--tw-border);
+}
+
+.tw-summary-body {
+  padding: 16px 24px;
+}
+
+.tw-summary-row {
+  padding: 12px 0;
+  border-bottom: 1px solid var(--tw-border);
+}
+
+.tw-summary-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--tw-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.tw-summary-value {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--tw-ink);
+  margin-top: 3px;
+}
+
+.tw-summary-meta {
+  font-size: 12px;
+  color: var(--tw-muted);
+  margin-top: 3px;
+}
+
+.tw-summary-divider {
+  height: 1px;
+  background: var(--tw-border);
+  margin: 4px 0;
+}
+
+.tw-summary-total {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 12px;
-}
-
-.tw-booking-total span {
-  font-size: 13px;
+  padding: 16px 0 4px;
+  font-size: 14px;
   font-weight: 700;
-  color: var(--tw-muted);
+  color: var(--tw-ink);
 }
 
-.tw-total-value {
-  font-size: 22px;
-  font-weight: 850;
+.tw-total-price {
+  font-size: 26px;
+  font-weight: 900;
+  color: var(--tw-ocean-deep);
+}
+
+.tw-summary-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 24px;
+  background: rgba(14,165,233,0.04);
+  border-top: 1px solid var(--tw-border);
+}
+
+.tw-summary-status {
+  font-size: 12px;
+  font-weight: 700;
   color: #047857;
 }
 
-footer { display: none !important; }
+.tw-summary-tip {
+  font-size: 11px;
+  color: var(--tw-muted);
+}
+
+.tw-summary-tip code {
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  font-size: 10px;
+  background: rgba(0,0,0,0.04);
+  padding: 1px 5px;
+  border-radius: 3px;
+}
+
+/* ===== GROUNDED AI BRIEF ===== */
+.tw-ai-brief {
+  margin: 0 0 16px;
+  padding: 18px 20px;
+  border: 1px solid rgba(14,165,233,0.2);
+  border-left: 4px solid var(--tw-ocean);
+  border-radius: var(--tw-radius-sm);
+  background: linear-gradient(135deg, #f0f9ff 0%, #ffffff 72%);
+  box-shadow: var(--tw-shadow-sm);
+  animation: tw-cardFadeIn 0.45s ease;
+}
+
+.tw-ai-brief-title {
+  color: var(--tw-ocean-deep);
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.2px;
+  margin-bottom: 8px;
+}
+
+.tw-ai-brief-body {
+  color: var(--tw-ink-light);
+  font-size: 13px;
+  line-height: 1.65;
+  white-space: normal;
+}
+
+/* ===== BOOKING RESULT ===== */
+.tw-booking-result {
+  border-radius: var(--tw-radius);
+  padding: 24px;
+  max-width: 440px;
+  animation: tw-cardFadeIn 0.5s ease;
+}
+
+.tw-booking-success {
+  background: linear-gradient(135deg, #ecfdf5 0%, #ffffff 100%);
+  border: 1px solid #a7f3d0;
+}
+
+.tw-booking-failed {
+  background: linear-gradient(135deg, #fef2f2 0%, #ffffff 100%);
+  border: 1px solid #fecaca;
+}
+
+.tw-booking-icon {
+  font-size: 36px;
+  text-align: center;
+  margin-bottom: 8px;
+}
+
+.tw-booking-status-title {
+  font-size: 20px;
+  font-weight: 800;
+  text-align: center;
+  margin-bottom: 16px;
+  letter-spacing: -0.5px;
+}
+
+.tw-booking-success .tw-booking-status-title { color: #047857; }
+.tw-booking-failed .tw-booking-status-title { color: #b91c1c; }
+.tw-booking-failed .tw-booking-reason { text-align: center; color: #7f1d1d; font-size: 13px; }
+
+.tw-confirmation-box {
+  text-align: center;
+  background: white;
+  border: 1px solid #d1fae5;
+  border-radius: var(--tw-radius-sm);
+  padding: 14px;
+  margin-bottom: 16px;
+}
+
+.tw-conf-label {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--tw-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  display: block;
+}
+
+.tw-conf-code {
+  font-size: 22px;
+  font-weight: 900;
+  color: #047857;
+  letter-spacing: 2px;
+  margin-top: 4px;
+  display: block;
+  font-family: 'SF Mono', 'Fira Code', monospace;
+}
+
+.tw-receipt-body {
+  padding: 12px 0;
+  border-top: 1px solid var(--tw-border);
+  border-bottom: 1px solid var(--tw-border);
+}
+
+.tw-receipt-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+}
+
+.tw-receipt-label {
+  font-size: 12px;
+  color: var(--tw-muted);
+  font-weight: 600;
+}
+
+.tw-receipt-value {
+  font-size: 13px;
+  color: var(--tw-ink);
+  font-weight: 700;
+}
+
+.tw-receipt-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 14px;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--tw-ink);
+}
+
+.tw-total-amount {
+  font-size: 24px;
+  font-weight: 900;
+  color: #047857;
+}
+
+/* ===== WELCOME / FALLBACK CARD ===== */
+.tw-welcome-card {
+  background: var(--tw-card);
+  border: 1px solid var(--tw-border);
+  border-radius: var(--tw-radius);
+  overflow: hidden;
+  animation: tw-cardFadeIn 0.4s ease;
+}
+
+.tw-welcome-header {
+  padding: 24px;
+  background: linear-gradient(135deg, #f0f9ff 0%, #ecfdf5 100%);
+  border-bottom: 1px solid var(--tw-border);
+  text-align: center;
+}
+
+.tw-welcome-icon { font-size: 32px; margin-bottom: 8px; }
+.tw-welcome-title { font-size: 18px; font-weight: 800; color: var(--tw-ink); }
+.tw-welcome-subtitle { font-size: 12px; color: var(--tw-muted); margin-top: 4px; font-weight: 500; }
+
+.tw-welcome-body { padding: 20px 24px; }
+
+.tw-welcome-note {
+  font-size: 13px;
+  color: var(--tw-ink-light);
+  line-height: 1.6;
+  margin-bottom: 16px;
+  padding: 10px 14px;
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  border-radius: var(--tw-radius-xs);
+}
+
+.tw-capability-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.tw-capability {
+  padding: 14px;
+  border: 1px solid var(--tw-border);
+  border-radius: var(--tw-radius-sm);
+  background: var(--tw-bg);
+  transition: all 0.2s;
+}
+
+.tw-capability:hover {
+  border-color: var(--tw-ocean);
+  background: #f0f9ff;
+}
+
+.tw-cap-icon { font-size: 20px; display: block; margin-bottom: 6px; }
+.tw-cap-title { font-size: 13px; font-weight: 700; color: var(--tw-ink); display: block; }
+.tw-cap-example {
+  font-size: 11px; color: var(--tw-muted); font-weight: 500; display: block; margin-top: 4px;
+  font-family: 'SF Mono', 'Fira Code', monospace;
+}
+
+/* ===== CLARIFY & ERROR CARDS ===== */
+.tw-clarify-card {
+  background: #f0f9ff;
+  border: 1px solid #bae6fd;
+  border-radius: var(--tw-radius);
+  padding: 20px;
+  animation: tw-cardFadeIn 0.3s ease;
+}
+
+.tw-clarify-title { font-size: 15px; font-weight: 700; color: #0369a1; margin-bottom: 8px; }
+.tw-clarify-body { font-size: 13px; color: var(--tw-ink-light); line-height: 1.6; }
+.tw-clarify-example { font-size: 12px; color: var(--tw-muted); margin-top: 10px; }
+.tw-clarify-example code {
+  font-family: 'SF Mono', 'Fira Code', monospace; font-size: 11px;
+  background: rgba(0,0,0,0.04); padding: 2px 6px; border-radius: 3px;
+}
+
+.tw-error-card {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: var(--tw-radius);
+  padding: 16px 20px;
+  font-size: 13px;
+  color: #991b1b;
+  font-weight: 500;
+  animation: tw-cardFadeIn 0.3s ease;
+}
+
+.tw-notice-card {
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  border-radius: var(--tw-radius);
+  padding: 16px 20px;
+  margin-top: 8px;
+}
+
+.tw-notice-title { font-size: 14px; font-weight: 700; color: #92400e; margin-bottom: 8px; }
+.tw-notice-list { margin: 0; padding-left: 16px; font-size: 12px; color: #78350f; }
+
+/* ===== TRAVEL TIP ===== */
+.tw-travel-tip {
+  background: linear-gradient(135deg, #fffbeb 0%, #fefce8 100%);
+  border: 1px solid #fde68a;
+  border-radius: var(--tw-radius);
+  padding: 16px 20px;
+  margin-top: 12px;
+  animation: tw-cardFadeIn 0.5s ease;
+}
+
+.tw-tip-header { font-size: 14px; font-weight: 700; color: #92400e; margin-bottom: 6px; }
+.tw-tip-body { font-size: 13px; color: #78350f; line-height: 1.7; }
+
+/* ===== EMPTY STATE ===== */
+.tw-empty-state {
+  text-align: center;
+  padding: 32px 20px;
+  background: var(--tw-bg);
+  border: 1px dashed var(--tw-border-hover);
+  border-radius: var(--tw-radius);
+}
+
+.tw-empty-icon { font-size: 32px; margin-bottom: 8px; opacity: 0.5; }
+.tw-empty-text { font-size: 14px; color: var(--tw-ink-light); font-weight: 600; }
+.tw-empty-hint { font-size: 12px; color: var(--tw-muted); margin-top: 4px; }
+
+/* ===== MOBILE RESPONSIVE ===== */
+@media (max-width: 768px) {
+  #tw-hero {
+    padding: 28px 20px 24px;
+    border-radius: 0 0 20px 20px;
+  }
+
+  .tw-hero-title { font-size: 32px; }
+  .tw-hero-desc { font-size: 13px; }
+
+  #tw-nav {
+    padding: 12px 16px;
+  }
+
+  .tw-nav-links { display: none; }
+
+  .tw-main-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .tw-cards-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .tw-capability-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .tw-flight-route {
+    padding: 12px;
+  }
+
+  .tw-airport-code {
+    font-size: 18px;
+  }
+
+  .tw-summary-footer {
+    flex-direction: column;
+    gap: 8px;
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .tw-hero-title { font-size: 26px; }
+  .tw-hero-chips { gap: 6px; }
+  .tw-hero-chip { font-size: 10px; padding: 5px 10px; }
+
+  .quick-row {
+    flex-direction: column;
+  }
+
+  .quick-row button {
+    width: 100% !important;
+  }
+}
 """
 
 
@@ -628,18 +1433,61 @@ def _history_for_api(chat_history: Any) -> List[Dict[str, str]]:
     return clean_history[-10:]
 
 
+# Activity state icons and labels (using HTML entities for Windows compat)
+_ACTIVITY_CONFIG = {
+    "ROUTING": {"icon": "&#129504;", "label": "Routing"},
+    "SEARCHING": {"icon": "&#128269;", "label": "Searching"},
+    "BOOKING": {"icon": "&#128221;", "label": "Booking"},
+    "RESPONDING": {"icon": "&#10024;", "label": "Responding"},
+    "CLARIFYING": {"icon": "&#10067;", "label": "Clarifying"},
+    "IDLE": {"icon": "&#9200;", "label": "Idle"},
+}
+
+
 def _activity_html(events: List[Dict[str, object]]) -> str:
+    header = (
+        "<div id='activity-panel'>"
+        "<div class='tw-activity-header'>"
+        "<span class='tw-activity-icon'>&#9889;</span>"
+        "<span class='tw-activity-title'>Agent Activity</span>"
+        "</div>"
+    )
+
     if not events:
-        return "<div id='activity-panel'><b>Agent Activity</b><span class='activity-chip good'>READY: Waiting for your trip request.</span></div>"
+        return (
+            header +
+            "<span class='activity-chip idle'>"
+            "<span class='chip-icon'>&#9200;</span>"
+            "Ready &mdash; waiting for your trip request"
+            "</span>"
+            "</div>"
+        )
 
     chips = []
     for event in events[-8:]:
         status = event.get("status", "IDLE")
-        css = "good" if status == "SUCCEEDED" else "warn" if status == "FAILED" else "run" if status == "INVOKED" else ""
-        state = html.escape(str(event.get("state", "STATUS")))
+        state = str(event.get("state", "STATUS"))
         message = html.escape(str(event.get("message", "")))
-        chips.append(f"<span class='activity-chip {css}'>{state}: {message}</span>")
-    return "<div id='activity-panel'><b>Agent Activity</b>" + "".join(chips) + "</div>"
+
+        cfg = _ACTIVITY_CONFIG.get(state, {"icon": "&#9679;", "label": state})
+
+        if status == "SUCCEEDED":
+            css = "good"
+        elif status == "FAILED":
+            css = "warn"
+        elif status == "INVOKED":
+            css = "run"
+        else:
+            css = "idle"
+
+        chips.append(
+            f"<span class='activity-chip {css}'>"
+            f"<span class='chip-icon'>{cfg['icon']}</span>"
+            f"{cfg['label']}: {message}"
+            f"</span>"
+        )
+
+    return header + "".join(chips) + "</div>"
 
 
 def chat_with_tripweaver(message: str, chat_history: List[Dict[str, str]]) -> Generator:
@@ -651,7 +1499,7 @@ def chat_with_tripweaver(message: str, chat_history: List[Dict[str, str]]) -> Ge
 
     api_history = _history_for_api(chat_history)
     chat_history = chat_history + [{"role": "user", "content": message}, {"role": "assistant", "content": ""}]
-    events: List[Dict[str, object]] = [{"state": "ROUTING", "message": "Sending request to TripWeaver...", "status": "INVOKED"}]
+    events: List[Dict[str, object]] = [{"state": "ROUTING", "message": "Processing your request...", "status": "INVOKED"}]
     yield chat_history, _activity_html(events)
 
     try:
@@ -688,30 +1536,52 @@ def chat_with_tripweaver(message: str, chat_history: List[Dict[str, str]]) -> Ge
 
             yield chat_history, _activity_html(events)
     except Exception as exc:
-        events.append({"state": "RESPONDING", "message": "Backend is unreachable.", "status": "FAILED"})
+        events.append({"state": "RESPONDING", "message": "Connection issue.", "status": "FAILED"})
         chat_history[-1]["content"] = (
-            "TripWeaver could not complete this request. Make sure the FastAPI backend is running "
-            f"and BACKEND_URL is correct. Details: {exc}"
+            "<div class='tw-error-card'>"
+            "&#9888; <strong>Connection Error</strong><br>"
+            "TripWeaver could not reach the backend service. "
+            "Please ensure the FastAPI server is running and try again.<br>"
+            f"<small>Details: {html.escape(str(exc))}</small>"
+            "</div>"
         )
         yield chat_history, _activity_html(events)
 
 
-def use_example(example: str) -> str:
-    return example
-
-
-with gr.Blocks(title="TripWeaver") as demo:
+with gr.Blocks(title="TripWeaver | AI Travel Planner") as demo:
+    # Navigation Bar
     gr.HTML(
         """
-        <section id="hero">
-          <div class="badge">MCP Powered Multi-Agent Travel Intelligence</div>
-          <h1>TripWeaver</h1>
-          <p>Plan hotels, flights, and bookings through one premium conversational workspace. TripWeaver routes each request to specialist agents, calls external travel services through MCP, and streams the journey back with clear activity signals.</p>
-          <div class="stats">
-            <div class="stat">Intent-Routed LangGraph</div>
-            <div class="stat">Hotel + Flight MCP Servers</div>
-            <div class="stat">Live Provider + Fallback</div>
-            <div class="stat">Streaming FastAPI</div>
+        <nav id="tw-nav">
+          <div class="tw-nav-brand">
+            <div class="tw-nav-brand-icon">&#9992;</div>
+            TripWeaver
+          </div>
+          <div class="tw-nav-links">
+            <span class="tw-nav-link">Hotels</span>
+            <span class="tw-nav-link">Flights</span>
+            <span class="tw-nav-link">Plan Trip</span>
+          </div>
+          <div class="tw-nav-status">
+            <span class="tw-nav-dot"></span>
+            MCP Connected
+          </div>
+        </nav>
+        """
+    )
+
+    # Hero Section
+    gr.HTML(
+        """
+        <section id="tw-hero">
+          <div class="tw-hero-badge">&#9889; MCP-Powered Multi-Agent Travel Intelligence</div>
+          <h1 class="tw-hero-title">TripWeaver</h1>
+          <p class="tw-hero-desc">Plan hotels, flights, and bookings through one intelligent workspace. TripWeaver routes each request to specialist AI agents, queries external travel services through MCP servers, and delivers comprehensive travel plans.</p>
+          <div class="tw-hero-chips">
+            <span class="tw-hero-chip">&#129504; Intent-Routed LangGraph</span>
+            <span class="tw-hero-chip">&#127976; Hotel + Flight MCP Servers</span>
+            <span class="tw-hero-chip">&#128268; Live Provider + Fallback</span>
+            <span class="tw-hero-chip">&#9889; Streaming FastAPI</span>
           </div>
         </section>
         """
@@ -720,41 +1590,57 @@ with gr.Blocks(title="TripWeaver") as demo:
     with gr.Row():
         with gr.Column(scale=3, elem_classes=["panel"]):
             chatbot = gr.Chatbot(
-                height=560,
+                height=520,
                 buttons=["copy", "copy_all"],
                 label="Travel planning chat",
                 sanitize_html=False,
+                show_label=False,
             )
             user_input = gr.Textbox(
-                placeholder="Ask for hotels, flights, bookings, or general travel advice...",
+                placeholder="Where would you like to travel? Try: 'Plan hotel and flight from Colombo to Singapore under $500'",
                 label="Your trip request",
                 lines=2,
+                show_label=False,
             )
             with gr.Row(elem_classes=["quick-row"]):
-                search_hotels = gr.Button("Hotels in Bangkok")
-                search_flights = gr.Button("Flight BOM to DEL")
-                combined = gr.Button("Colombo to Singapore plan")
-            send = gr.Button("Plan my trip", variant="primary", elem_id="send-btn")
+                btn_hotels = gr.Button("Hotels in Bangkok")
+                btn_flights = gr.Button("Flights BOM to DEL")
+                btn_plan = gr.Button("Plan Colombo to Singapore")
+                btn_list = gr.Button("List all hotels")
+            send = gr.Button("Plan My Trip", variant="primary", elem_id="send-btn")
+
         with gr.Column(scale=1):
             activity = gr.HTML(_activity_html([]), label="Agent activity")
             gr.HTML(
                 """
-                <div class="pro-note">
-                  <b>Demo prompts</b><br>
-                  list all hotels<br>
-                  available hotels in Bangkok<br>
-                  flight from BOM to DEL<br>
-                  Plan hotel and flight from Colombo to Singapore under $500<br>
-                  Book hotel H-SIN-006 for Thara
+                <div class="tw-sidebar-section">
+                  <div class="tw-sidebar-title">&#128161; Quick Start Guide</div>
+                  <div class="tw-demo-prompt"><strong>Search Hotels:</strong><br><code>Hotels in Singapore under $200</code></div>
+                  <div class="tw-demo-prompt"><strong>Find Flights:</strong><br><code>Flight from Colombo to Bangkok</code></div>
+                  <div class="tw-demo-prompt"><strong>Full Trip Plan:</strong><br><code>Plan hotel and flight to Dubai under $600</code></div>
+                  <div class="tw-demo-prompt"><strong>Reserve a Hotel:</strong><br><code>Reserve a hotel using its reference and your name</code></div>
+                  <div class="tw-demo-prompt"><strong>Reserve a Flight:</strong><br><code>Reserve a flight using its reference and your name</code></div>
                 </div>
                 """
             )
 
+    # Footer
+    gr.HTML(
+        """
+        <div id="tw-footer">
+          <strong>TripWeaver</strong> &mdash; MCP-Based Multi-Agent Travel Intelligence Platform<br>
+          Built with LangGraph &middot; FastAPI &middot; Model Context Protocol &middot; Gradio<br>
+          <span style="opacity:0.6">&copy; 2025 TripWeaver. All travel data sourced via MCP servers.</span>
+        </div>
+        """
+    )
+
     send.click(chat_with_tripweaver, [user_input, chatbot], [chatbot, activity]).then(lambda: "", None, user_input)
     user_input.submit(chat_with_tripweaver, [user_input, chatbot], [chatbot, activity]).then(lambda: "", None, user_input)
-    search_hotels.click(lambda: "available hotels in Bangkok", None, user_input)
-    search_flights.click(lambda: "flight from BOM to DEL", None, user_input)
-    combined.click(lambda: "Plan hotel and flight from Colombo to Singapore under $500", None, user_input)
+    btn_hotels.click(lambda: "available hotels in Bangkok", None, user_input)
+    btn_flights.click(lambda: "flight from BOM to DEL", None, user_input)
+    btn_plan.click(lambda: "Plan hotel and flight from Colombo to Singapore under $500", None, user_input)
+    btn_list.click(lambda: "list all hotels", None, user_input)
 
 
 if __name__ == "__main__":

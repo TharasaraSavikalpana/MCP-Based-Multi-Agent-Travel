@@ -11,6 +11,7 @@ class ActivityEvent(TypedDict, total=False):
     message: str
     tool: Optional[str]
     status: ToolStatus
+    icon: str
 
 
 class TravelState(TypedDict, total=False):

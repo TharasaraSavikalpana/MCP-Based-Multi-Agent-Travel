@@ -12,6 +12,8 @@ intent routing, MCP hotel and flight servers, and a polished Gradio chat UI.
 - MCP tools for listing, searching, and booking hotels and flights.
 - Live provider bridge using the Convex travel service URLs from the reference
   example, with local fallback data for reliable demos.
+- OpenAI-grounded recommendation briefs that synthesize only the MCP results
+  returned for the current request.
 - Graceful service failure handling with user-friendly messages.
 - Missing-detail follow-up questions instead of fabricated values.
 - Streaming FastAPI endpoint with agent activity events.
@@ -118,8 +120,12 @@ Open the Gradio URL, usually `http://127.0.0.1:7860`.
 - `Search hotels in Paris under $200`
 - `Find flights from Colombo to Tokyo`
 - `Plan hotel and flight for Colombo to Paris under $900`
-- `Book hotel H-CMB-001 for Thara`
+- `Book hotel H-CMB-001 for Alex Morgan`
 - `What should I pack for Paris in August?`
+
+For a booking, replace `Alex Morgan` with the actual traveller name and use a
+hotel or flight reference returned by the result card. The reference is a
+provider identifier, not a personal name or hidden account value.
 
 ## Environment Variable Safety
 
