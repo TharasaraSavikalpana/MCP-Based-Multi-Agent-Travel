@@ -55,7 +55,6 @@ mcp_servers/
   flight_server.py Flight MCP tools
 main.py           FastAPI backend
 frontend.py       Gradio frontend
-docs/             MCP setup, deployment, and viva notes
 ```
 
 ## Local Setup
@@ -126,28 +125,3 @@ Open the Gradio URL, usually `http://127.0.0.1:7860`.
 For a booking, replace `Alex Morgan` with the actual traveller name and use a
 hotel or flight reference returned by the result card. The reference is a
 provider identifier, not a personal name or hidden account value.
-
-## Environment Variable Safety
-
-Secrets are loaded from `.env` locally and from hosting-platform secrets in
-production. `.env` and `.env.*` are ignored by Git. Only `.env.example` is safe
-to commit.
-
-Important: if an API key was pasted into chat or committed accidentally, rotate
-it immediately before deployment.
-
-## Deployment
-
-See [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
-
-## Beginner Run Guide
-
-See [RUN_FULL_PROJECT.md](RUN_FULL_PROJECT.md).
-
-## MCP Setup
-
-See [docs/MCP_SETUP.md](docs/MCP_SETUP.md).
-
-## Viva Preparation
-
-See [docs/VIVA_NOTES.md](docs/VIVA_NOTES.md).
